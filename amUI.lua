@@ -79,7 +79,7 @@ end
 
 -- Создаем watermark с текстом "Somik.com"
 local watermark = createDrawing('Text', {
-    Text = "Somik.com",
+    Text = "SOMIK.COM",
     Position = vector2_new(camx/2, 0),
     Center = true,
     Visible = true,
