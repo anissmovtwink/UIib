@@ -59,41 +59,18 @@ local library = {
 	alldrawings = {}, -- all drawings get stored in here
 }
 
--- Функция для плавного изменения цвета текста по RGB
-local function animateRGBTextColor(textObject, speed)
-    local time = 0
-    while true do
-        -- Используем синусоидальные функции для плавного перехода между цветами
-        local r = math.sin(time) * 0.5 + 0.5 -- Красный компонент (от 0 до 1)
-        local g = math.sin(time + 2) * 0.5 + 0.5 -- Зеленый компонент (сдвиг фазы)
-        local b = math.sin(time + 4) * 0.5 + 0.5 -- Синий компонент (сдвиг фазы)
-
-        -- Устанавливаем новый цвет текста
-        textObject.Color = color3_new(r, g, b)
-
-        -- Увеличиваем время для следующего кадра анимации
-        time = time + speed
-        wait()
-    end
-end
-
--- Создаем watermark с текстом "Somik.com"
 local watermark = createDrawing('Text', {
-    Text = "SOMIK.COM",
-    Position = vector2_new(camx/2, 0),
-    Center = true,
-    Visible = true,
-    Size = 40,
-    ZIndex = 99999999,
-    Outline = true,
-    Color = color3_new(1, 0, 0) -- Начальный цвет (красный)
+	Text = "somik.com",
+	Position = vector2_new(camx/2, 0),
+	Center = true,
+	Visible = true,
+	Size = 40,
+	ZIndex = 99999999,
+	Outline = true,
+	Color = color3_new(1, 0, 0)
 })
 
--- Запускаем анимацию плавного изменения цвета
-task.spawn(function()
-    animateRGBTextColor(watermark, 0.05) -- Скорость анимации (меньше = быстрее)
-end)
-
+-- library functions
 do
 	-- add arrow input function
 	function library:dInput(key, func)
@@ -235,7 +212,7 @@ do
 				Font = 2, -- Изменено на жирный шрифт
 				Outline = true;
 				Position = tab.drawings.base.Position,
-				Size = 17,
+				Size = 16,
 				Center = false;
 				Text = text,
 				OutlineColor = color3_fromrgb(0, 0, 0);
@@ -251,7 +228,7 @@ do
 				Center = false;
 				Font = 1,
 				Position = tab.drawings.base.Position + vector2_new(menuwidth-10, 0),
-				Size = 17,
+				Size = 16,
 				OutlineColor = color3_fromrgb(0, 0, 0);
 				Transparency = 1,
 				ZIndex = 1;
@@ -343,7 +320,7 @@ do
 						Color = color3_fromrgb(255, 255, 255),
 						Font = 2, -- Изменено на жирный шрифт
 						Position = button.drawings.base.Position,
-						Size = 17,
+						Size = 14,
 						Outline = true;
 						Center = false;
 						OutlineColor = color3_fromrgb(0, 0, 0);
@@ -420,7 +397,7 @@ do
 						Center = false;
 						OutlineColor = color3_fromrgb(0, 0, 0);
 						Position = toggle.drawings.base.Position,
-						Size = 17,
+						Size = 16,
 						Text = prop.text or 'Toggle',
 						Transparency = 1,
 						ZIndex = 1;
@@ -520,7 +497,7 @@ do
 						Color = color3_fromrgb(255, 255, 255),
 						Font = 2, -- Изменено на жирный шрифт
 						Position = slider.drawings.base.Position,
-						Size = 17,
+						Size = 16,
 						OutlineColor = color3_fromrgb(0, 0, 0);
 						Transparency = 1,
 						ZIndex = 1;
@@ -646,7 +623,7 @@ do
 						Outline = true;
 						Center = false;
 						Position = dropdown.drawings.base.Position,
-						Size = 17,
+						Size = 16,
 						OutlineColor = color3_fromrgb(0, 0, 0);
 						Transparency = 1,
 						ZIndex = 1;
