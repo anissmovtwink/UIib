@@ -58,18 +58,42 @@ local library = {
 	togglecallbacks = {};
 	alldrawings = {}, -- all drawings get stored in here
 }
+-- Функция для создания анимации изменения цвета текста
+local function animateTextColor(textObject, colors, speed)
+    local index = 1
+    while true do
+        textObject.Color = colors[index]
+        index = (index % #colors) + 1
+        wait(speed)
+    end
+end
 
+-- Создаем watermark с текстом "Somik.com"
 local watermark = createDrawing('Text', {
-	Text = "somik.com",
-	Position = vector2_new(camx/2, 0),
-	Center = true,
-	Visible = true,
-	Size = 40,
-	ZIndex = 99999999,
-	Outline = true,
-	Color = color3_new(1, 0, 0)
+    Text = "Somik.com",
+    Position = vector2_new(camx/2, 0),
+    Center = true,
+    Visible = true,
+    Size = 40,
+    ZIndex = 99999999,
+    Outline = true,
+    Color = color3_new(1, 0, 0) -- Начальный цвет (красный)
 })
 
+-- Задаем цвета для анимации
+local colors = {
+    color3_fromrgb(255, 0, 0),   -- Красный
+    color3_fromrgb(0, 255, 0),   -- Зеленый
+    color3_fromrgb(0, 0, 255),   -- Синий
+    color3_fromrgb(255, 255, 0), -- Желтый
+    color3_fromrgb(255, 0, 255), -- Пурпурный
+    color3_fromrgb(0, 255, 255)  -- Голубой
+}
+
+-- Запускаем анимацию цвета текста
+task.spawn(function()
+    animateTextColor(watermark, colors, 0.5) -- Меняем цвет каждые 0.5 секунд
+end)
 -- library functions
 do
 	-- add arrow input function
