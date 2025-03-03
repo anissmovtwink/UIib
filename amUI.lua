@@ -236,7 +236,7 @@ do
 				Font = 2, -- Изменено на жирный шрифт
 				Outline = true;
 				Position = tab.drawings.base.Position,
-				Size = 14,
+				Size = 23,
 				Center = false;
 				Text = text,
 				OutlineColor = color3_fromrgb(0, 0, 0);
@@ -252,7 +252,7 @@ do
 				Center = false;
 				Font = 1,
 				Position = tab.drawings.base.Position + vector2_new(menuwidth-10, 0),
-				Size = 14,
+				Size = 23,
 				OutlineColor = color3_fromrgb(0, 0, 0);
 				Transparency = 1,
 				ZIndex = 1;
@@ -344,7 +344,7 @@ do
 						Color = color3_fromrgb(255, 255, 255),
 						Font = 2, -- Изменено на жирный шрифт
 						Position = button.drawings.base.Position,
-						Size = 14,
+						Size = 23,
 						Outline = true;
 						Center = false;
 						OutlineColor = color3_fromrgb(0, 0, 0);
@@ -421,7 +421,7 @@ do
 						Center = false;
 						OutlineColor = color3_fromrgb(0, 0, 0);
 						Position = toggle.drawings.base.Position,
-						Size = 14,
+						Size = 23,
 						Text = prop.text or 'Toggle',
 						Transparency = 1,
 						ZIndex = 1;
@@ -521,7 +521,7 @@ do
 						Color = color3_fromrgb(255, 255, 255),
 						Font = 2, -- Изменено на жирный шрифт
 						Position = slider.drawings.base.Position,
-						Size = 14,
+						Size = 23,
 						OutlineColor = color3_fromrgb(0, 0, 0);
 						Transparency = 1,
 						ZIndex = 1;
@@ -647,7 +647,7 @@ do
 						Outline = true;
 						Center = false;
 						Position = dropdown.drawings.base.Position,
-						Size = 22,
+						Size = 23,
 						OutlineColor = color3_fromrgb(0, 0, 0);
 						Transparency = 1,
 						ZIndex = 1;
