@@ -623,7 +623,7 @@ do
 						Outline = true;
 						Center = false;
 						Position = dropdown.drawings.base.Position,
-						Size = 12,
+						Size = 16,
 						OutlineColor = color3_fromrgb(0, 0, 0);
 						Transparency = 1,
 						ZIndex = 1;
