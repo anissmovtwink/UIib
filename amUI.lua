@@ -58,19 +58,28 @@ local library = {
 	togglecallbacks = {};
 	alldrawings = {}, -- all drawings get stored in here
 }
--- Функция для создания анимации изменения цвета текста
-local function animateTextColor(textObject, colors, speed)
-    local index = 1
+
+-- Функция для плавного изменения цвета текста по RGB
+local function animateRGBTextColor(textObject, speed)
+    local time = 0
     while true do
-        textObject.Color = colors[index]
-        index = (index % #colors) + 1
-        wait(speed)
+        -- Используем синусоидальные функции для плавного перехода между цветами
+        local r = math.sin(time) * 0.5 + 0.5 -- Красный компонент (от 0 до 1)
+        local g = math.sin(time + 2) * 0.5 + 0.5 -- Зеленый компонент (сдвиг фазы)
+        local b = math.sin(time + 4) * 0.5 + 0.5 -- Синий компонент (сдвиг фазы)
+
+        -- Устанавливаем новый цвет текста
+        textObject.Color = color3_new(r, g, b)
+
+        -- Увеличиваем время для следующего кадра анимации
+        time = time + speed
+        wait()
     end
 end
 
 -- Создаем watermark с текстом "Somik.com"
 local watermark = createDrawing('Text', {
-    Text = "SOMIK.COM",
+    Text = "Somik.com",
     Position = vector2_new(camx/2, 0),
     Center = true,
     Visible = true,
@@ -80,21 +89,11 @@ local watermark = createDrawing('Text', {
     Color = color3_new(1, 0, 0) -- Начальный цвет (красный)
 })
 
--- Задаем цвета для анимации
-local colors = {
-    color3_fromrgb(255, 0, 0),   -- Красный
-    color3_fromrgb(0, 255, 0),   -- Зеленый
-    color3_fromrgb(0, 0, 255),   -- Синий
-    color3_fromrgb(255, 255, 0), -- Желтый
-    color3_fromrgb(255, 0, 255), -- Пурпурный
-    color3_fromrgb(0, 255, 255)  -- Голубой
-}
-
--- Запускаем анимацию цвета текста
+-- Запускаем анимацию плавного изменения цвета
 task.spawn(function()
-    animateTextColor(watermark, colors, 0.5) -- Меняем цвет каждые 0.5 секунд
+    animateRGBTextColor(watermark, 0.05) -- Скорость анимации (меньше = быстрее)
 end)
--- library functions
+
 do
 	-- add arrow input function
 	function library:dInput(key, func)
