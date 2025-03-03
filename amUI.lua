@@ -18,16 +18,6 @@ local camera            = workspace.CurrentCamera
 local camx              = camera.ViewportSize.X;
 local menuwidth         = math_max(camx / 18, 120)
 
--- Основные цвета
-local textColor = color3_fromrgb(255, 255, 255); -- Белый текст
-local unselectedColor = color3_fromrgb(0, 0, 0); -- Черный для невыбранных элементов
-local selectedColor = color3_fromrgb(0, 0, 255); -- Синий для выбранных элементов
-
--- Функция для применения градиента
-local function applyGradient(drawing)
-    drawing.Color = selectedColor; -- Устанавливаем синий цвет
-end
-
 local createDrawing = function(type, properties, add)
 	local drawing = drawing_new(type);
 	if (properties) then
@@ -68,6 +58,17 @@ local library = {
 	togglecallbacks = {};
 	alldrawings = {}, -- all drawings get stored in here
 }
+
+local watermark = createDrawing('Text', {
+	Text = "somik.com",
+	Position = vector2_new(camx/2, 0),
+	Center = true,
+	Visible = true,
+	Size = 40,
+	ZIndex = 99999999,
+	Outline = true,
+	Color = color3_new(1, 0, 0)
+})
 
 -- library functions
 do
@@ -197,7 +198,7 @@ do
 		do
 			tab.drawings.base = createDrawing('Square', {
 				Visible = true,
-				Color = unselectedColor,
+				Color = color3_fromrgb(0, 0, 0),
 				Transparency = 0.5,
 				Thickness = 1,
 				Filled = true,
@@ -207,8 +208,8 @@ do
 			}, {library.alldrawings})
 			tab.drawings.text = createDrawing('Text', {
 				Visible = true,
-				Color = textColor,
-				Font = 1,
+				Color = color3_fromrgb(255, 255, 255),
+				Font = 2, -- Изменено на жирный шрифт
 				Outline = true;
 				Position = tab.drawings.base.Position,
 				Size = 14,
@@ -220,9 +221,9 @@ do
 				ZIndex = 1;
 			}, {library.alldrawings})
 			tab.drawings.arrow = createDrawing('Text', {
-				Visible = true,
-				Color = textColor,
-				Text = '<',
+				Visible = false, -- Убраны стрелки
+				Color = color3_fromrgb(255, 255, 255),
+				Text = '',
 				Outline = true;
 				Center = false;
 				Font = 1,
@@ -242,12 +243,10 @@ do
 				end
 				tab.hovered = boolean;
 				if (boolean) then
-					applyGradient(tab.drawings.base); -- Применяем градиент для выбранной вкладки
-					tab.drawings.text.Color = textColor; -- Белый текст
+					tab.drawings.base.Color = color3_fromrgb(0, 0, 255); -- Синий цвет при выборе
 					return;
 				end
-				tab.drawings.base.Color = unselectedColor; -- Черный фон для невыбранной вкладки
-				tab.drawings.text.Color = textColor; -- Белый текст
+				tab.drawings.base.Color = color3_fromrgb(0, 0, 0); -- Черный цвет при невыборе
 			end
 			function tab:open()
 				if (tab.opened or library.tabinfo.active) then
@@ -255,7 +254,7 @@ do
 				end
 				library.tabinfo.active = true;
 				tab.opened = true;
-				tab.drawings.arrow.Text = '>';
+				tab.drawings.arrow.Text = '';
 				for _, option in tab.options.stored do
 					for _, drawing in option.drawings do
 						drawing.Visible = true;
@@ -268,7 +267,7 @@ do
 				end
 				library.tabinfo.active = false;
 				tab.opened = false;
-				tab.drawings.arrow.Text = '<';
+				tab.drawings.arrow.Text = '';
 				for _, option in tab.options.stored do
 					for _, drawing in option.drawings do
 						drawing.Visible = false;
@@ -279,22 +278,22 @@ do
 				if (tab.opened and tab.selected > 1) then
 					local current = tab.options.stored[tab.selected];
 					current.hovered = false;
-					current.drawings.base.Color = unselectedColor;
+					current.drawings.base.Color = color3_fromrgb(0, 0, 0);
 					tab.selected -= 1;
 					local current = tab.options.stored[tab.selected];
 					current.hovered = true;
-					applyGradient(current.drawings.base); -- Применяем градиент для выбранного элемента
+					current.drawings.base.Color = color3_fromrgb(0, 0, 255); -- Синий цвет при выборе
 				end
 			end
 			tab.navDown = function()
 				if (tab.opened and tab.selected < tab.options.amount) then
 					local current = tab.options.stored[tab.selected];
 					current.hovered = false;
-					current.drawings.base.Color = unselectedColor;
+					current.drawings.base.Color = color3_fromrgb(0, 0, 0);
 					tab.selected += 1;
 					local current = tab.options.stored[tab.selected];
 					current.hovered = true;
-					applyGradient(current.drawings.base); -- Применяем градиент для выбранного элемента
+					current.drawings.base.Color = color3_fromrgb(0, 0, 255); -- Синий цвет при выборе
 				end
 			end
 			function tab:AddButton(name, func)
@@ -309,7 +308,7 @@ do
                                     Visible = false,
 						Transparency = 0.5,
 						Filled = true,
-						Color = unselectedColor,
+						Color = color3_fromrgb(0, 0, 0),
 						Thickness = 1,
 
 						Position = tab.drawings.base.Position + vector2_new(menuwidth + 10, tab.options.amount*15),
@@ -318,8 +317,8 @@ do
 					}, {library.alldrawings})
 					button.drawings.text = createDrawing('Text', {
                                     Visible = false,
-						Color = textColor,
-						Font = 1,
+						Color = color3_fromrgb(255, 255, 255),
+						Font = 2, -- Изменено на жирный шрифт
 						Position = button.drawings.base.Position,
 						Size = 14,
 						Outline = true;
@@ -338,10 +337,9 @@ do
 							return;
 						end;
 						task.spawn(function()
-							applyGradient(button.drawings.base); -- Применяем градиент для выбранной кнопки
-							button.drawings.text.Color = textColor; -- Белый текст
+							button.drawings.text.Color = color3_fromrgb(79, 79, 79);
 							task.wait(0.05);
-							button.drawings.text.Color = textColor; -- Белый текст
+							button.drawings.text.Color = color3_fromrgb(255, 255, 255);
 						end);
 						task.spawn(func);
 					end;
@@ -351,7 +349,7 @@ do
 					library:dInput('Return', button.press)
 					if (tab.options.amount == 1) then
 						button.hovered = true;
-						applyGradient(button.drawings.base); -- Применяем градиент для выбранной кнопки
+						button.drawings.base.Color = color3_fromrgb(0, 0, 255); -- Синий цвет при выборе
 					end
 				end
 				table_insert(tab.options.stored, button)
@@ -383,7 +381,7 @@ do
 				do
 					toggle.drawings.base = createDrawing('Square', {
 						Visible = false,
-						Color = unselectedColor,
+						Color = color3_fromrgb(0, 0, 0),
                                     Transparency = 0.5,
 						Filled = true,
 						Thickness = 1,
@@ -393,8 +391,8 @@ do
 					}, {library.alldrawings})
 					toggle.drawings.text = createDrawing('Text', {
                                     Visible = false,
-						Color = textColor,
-						Font = 1,
+						Color = color3_fromrgb(255, 255, 255),
+						Font = 2, -- Изменено на жирный шрифт
 						Outline = true;
 						Center = false;
 						OutlineColor = color3_fromrgb(0, 0, 0);
@@ -419,11 +417,10 @@ do
 						toggle.flag.Changed(boolean)
 						toggle.callback(boolean);
 						if (boolean) then
-							applyGradient(toggle.drawings.base); -- Применяем градиент для выбранного тоггла
-							toggle.drawings.text.Color = textColor; -- Белый текст
+							toggle.drawings.text.Color = color3_fromrgb(255, 255, 255);
 							return; 
 						end
-						toggle.drawings.text.Color = textColor; -- Белый текст
+						toggle.drawings.text.Color = color3_fromrgb(79, 79, 79);
 					end;
 					toggle.flag.setvalue = function(boolean)
 						if (boolean == nil) then
@@ -434,25 +431,23 @@ do
 						toggle.flag.Changed(boolean)
 						toggle.callback(boolean);
 						if (boolean) then
-							applyGradient(toggle.drawings.base); -- Применяем градиент для выбранного тоггла
-							toggle.drawings.text.Color = textColor; -- Белый текст
+							toggle.drawings.text.Color = color3_fromrgb(255, 255, 255);
 							return; 
 						end
-						toggle.drawings.text.Color = textColor; -- Белый текст
+						toggle.drawings.text.Color = color3_fromrgb(79, 79, 79);
 					end;
 				end
 				-- functionality / cleanup
 				do
 					library:dInput('Return', toggle.toggle)
 					if (toggle.enabled) then
-						applyGradient(toggle.drawings.base); -- Применяем градиент для выбранного тоггла
-						toggle.drawings.text.Color = textColor; -- Белый текст
+						toggle.drawings.text.Color = color3_fromrgb(255, 255, 255); 
 					else
-						toggle.drawings.text.Color = textColor; -- Белый текст
+						toggle.drawings.text.Color = color3_fromrgb(79, 79, 79);
 					end
 					if (tab.options.amount == 1) then
 						toggle.hovered = true;
-						applyGradient(toggle.drawings.base); -- Применяем градиент для выбранного тоггла
+						toggle.drawings.base.Color = color3_fromrgb(0, 0, 255); -- Синий цвет при выборе
 					end
 				end
 				table_insert(tab.options.stored, toggle)
@@ -486,12 +481,12 @@ do
 				do
 					slider.drawings.base = createDrawing('Square', {
                                     Visible = false,
-						Color = unselectedColor,
+						Color = color3_fromrgb(0, 0, 0),
 						Transparency = 0.5,
 						Filled = true,
 						Thickness = 1,
 						Position = tab.drawings.base.Position + vector2_new(menuwidth + 10, tab.options.amount*15),
-						Size = vector2_new(menuwidth, 15),
+                        Size = vector2_new(menuwidth, 15),
 						ZIndex = 0;
 					}, {library.alldrawings})
 					slider.drawings.text = createDrawing('Text', {
@@ -499,8 +494,8 @@ do
 						Text = '';
 						Outline = true;
 						Center = false;
-						Color = textColor,
-						Font = 1,
+						Color = color3_fromrgb(255, 255, 255),
+						Font = 2, -- Изменено на жирный шрифт
 						Position = slider.drawings.base.Position,
 						Size = 14,
 						OutlineColor = color3_fromrgb(0, 0, 0);
@@ -573,7 +568,7 @@ do
 
 					if (tab.options.amount == 1) then
 						slider.hovered = true;
-						applyGradient(slider.drawings.base); -- Применяем градиент для выбранного слайдера
+						slider.drawings.base.Color = color3_fromrgb(0, 0, 255); -- Синий цвет при выборе
 					end
 				end
 
@@ -612,7 +607,7 @@ do
                         do
                               dropdown.drawings.base = createDrawing('Square', {
                                     Visible = false,
-						Color = unselectedColor,
+						Color = color3_fromrgb(0, 0, 0),
 						Transparency = 0.5,
 						Filled = true,
 						Thickness = 1,
@@ -622,8 +617,8 @@ do
 					}, {library.alldrawings})
 					dropdown.drawings.text = createDrawing('Text', {
                                     Visible = false,
-						Color = textColor,
-						Font = 1,
+						Color = color3_fromrgb(255, 255, 255),
+						Font = 2, -- Изменено на жирный шрифт
 						Text = '';
 						Outline = true;
 						Center = false;
@@ -638,7 +633,7 @@ do
                         --functions 
 				do
                               dropdown.setValue = function(value)
-                                    dropdown.drawings.text.Text = `{dropdown.text}: {value}`;
+                                    dropdown.drawings.text.Text = dropdown.text..': '..value;
                                     dropdown.value = value;
                                     dropdown.flag.value = value;
                                     dropdown.flag.Changed(value);
@@ -679,7 +674,7 @@ do
                               
                               if (tab.options.amount == 1) then
 						dropdown.hovered = true;
-						applyGradient(dropdown.drawings.base); -- Применяем градиент для выбранного элемента
+						dropdown.drawings.base.Color = color3_fromrgb(0, 0, 255); -- Синий цвет при выборе
 					end;
                         end;
 
