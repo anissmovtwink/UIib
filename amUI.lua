@@ -58,18 +58,6 @@ local library = {
 	togglecallbacks = {};
 	alldrawings = {}, -- all drawings get stored in here
 }
-
-local watermark = createDrawing('Text', {
-	Text = "somik.com",
-	Position = vector2_new(camx/2, 0),
-	Center = true,
-	Visible = true,
-	Size = 40,
-	ZIndex = 99999999,
-	Outline = true,
-	Color = color3_new(1, 0, 0)
-})
-
 -- library functions
 do
 	-- add arrow input function
@@ -320,7 +308,7 @@ do
 						Color = color3_fromrgb(255, 255, 255),
 						Font = 2, -- Изменено на жирный шрифт
 						Position = button.drawings.base.Position,
-						Size = 14,
+						Size = 16,
 						Outline = true;
 						Center = false;
 						OutlineColor = color3_fromrgb(0, 0, 0);
